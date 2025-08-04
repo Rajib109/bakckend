@@ -1,11 +1,19 @@
 // require('dotenv').config({path: './env'})
 import dotenv from "dotenv";
 import connectDB from './db/index.js';
+import { app } from "./app.js";
 
 dotenv.config({path: './env'})
 
 
-connectDB()
+connectDB().then(() => {
+    app.listen(process.env.PORT || 3000, () => {
+        console.log(`Server is running on port ${process.env.PORT || 3000}`);
+    });
+}).catch((error) => {
+    console.error('Error connecting to the database:', error);
+    process.exit(1); // Exit the process with failure
+});
 
 
 
@@ -24,7 +32,8 @@ connectDB()
 
 
 
-
+// Uncomment the following lines if you want to use mongoose directly
+// import mongoose from 'mongoose';
 /*
 import { DB_NAME } from './constants';
 
