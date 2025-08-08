@@ -31,7 +31,6 @@ connectDB().then(() => {
 
 
 
-
 // Uncomment the following lines if you want to use mongoose directly
 // import mongoose from 'mongoose';
 /*
