@@ -13,11 +13,11 @@ const uploadonCloudinary = async (filePath) => {
         return null;
     }
     try {
-        const result = await cloudinary.v2.uploader.upload(filePath, {
-            public_id: "sample_image",
+        const result = await cloudinary.uploader.upload(filePath, {
             resource_type: "image"
         });
-        console.log("file uploaded successfully", result.url);
+        // console.log("file uploaded successfully", result.url);
+        fs.unlinkSync(filePath); // Delete the file after upload
         return result;
     } catch (error) {
         fs.unlinkSync(filePath); // Delete the file if upload fails
