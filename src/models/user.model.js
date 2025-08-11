@@ -55,7 +55,7 @@ userSchema.methods.comparePassword = async function (candidatePassword) {
     return await bcrypt.compare(candidatePassword, this.password);
 };
 
-userSchema.methods.generateaccessToken = function () {
+userSchema.methods.generateAccessToken = function () {
     return jwt.sign({
         id: this._id,
         email: this.email,
@@ -67,7 +67,7 @@ userSchema.methods.generateaccessToken = function () {
     });
 };
 
-userSchema.methods.generaterefreshToken = function () {
+userSchema.methods.generateRefreshToken = function () {
     return jwt.sign({ id: this._id }, process.env.REFRESH_TOKEN_SECRET, {
         expiresIn: process.env.REFRESH_TOKEN_EXPIRY
     });
