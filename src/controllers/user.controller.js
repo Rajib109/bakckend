@@ -271,6 +271,8 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
         .status(new Apiresponse(200,"Avatar updated succesfully",user))
 })
 
+// make a util for delete avatar
+
 const updateUserCoverImage = asyncHandler(async (req, res) => {
     const coverImageLocalPath = req.file?.path
 
@@ -293,6 +295,8 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
         return res
         .status(new Apiresponse(200,"coverImage updated succesfully",user))
 })
+
+// make a util for deleting coverImage
 
 export {
     registerUser,
