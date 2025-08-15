@@ -169,10 +169,11 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     try {
         const decodedToken = await jwt.verify(incomingrefreshToken, process.env.REFRESH_TOKEN_SECRET)
 
-        const user = await User.findById(decodedToken?._id)
+        const user = await User.findById(decodedToken?.id)
+        console.log(decodedToken);
 
         if (!user) {
-            throw new ApiError("Invalid refresh token", 401)
+            throw new ApiError("Invalid refresh token 400", 401)
         }
 
         if (incomingrefreshToken !== user?.refreshToken) {
@@ -249,51 +250,62 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
 });
 
 const updateUserAvatar = asyncHandler(async (req, res) => {
-    const avatarLocalPath = req.file?.path
+    const avatarLocalPath = req.files?.avatar[0]?.path
 
     if (!avatarLocalPath) {
         throw new ApiError("Avatar file is missing", 400)
     }
 
-    const avatar = uploadonCloudinary(avatarLocalPath)
+    const avatar = await uploadonCloudinary(avatarLocalPath)
+
 
     if (!avatar.url) {
         throw new ApiError("Error while uploading on cloudinary", 400)
     }
 
-    const user = await findByIdAndUpdate(req.user?._id,
-        {
-            $set: { avatar: avatar.url }
-        },
-        { new: true }).select("-password")
+    try {
+        const user = await User.findByIdAndUpdate(req.user?._id,
+            {
+                $set: { avatar: avatar.url }
+            },
+            { new: true }).select("-password")
 
         return res
-        .status(new Apiresponse(200,"Avatar updated succesfully",user))
+            .status(200)
+            .json(new Apiresponse(200, "Avatar updated succesfully", user))
+    } catch (error) {
+        throw new ApiError("Error while updating avatar", 500)
+    }
 })
 
 // make a util for delete avatar
 
 const updateUserCoverImage = asyncHandler(async (req, res) => {
-    const coverImageLocalPath = req.file?.path
+    const coverImageLocalPath = req.files?.coverImage[0]?.path
 
     if (!coverImageLocalPath) {
         throw new ApiError("coverImage file is missing", 400)
     }
 
-    const coverImage = uploadonCloudinary(coverImageLocalPath)
+    const coverImage = await uploadonCloudinary(coverImageLocalPath)
 
     if (!coverImage.url) {
         throw new ApiError("Error while uploading on cloudinary", 400)
     }
 
-    const user = await findByIdAndUpdate(req.user?._id,
-        {
-            $set: { coverImage: coverImage.url }
-        },
-        { new: true }).select("-password")
+    try {
+        const user = await User.findByIdAndUpdate(req.user?._id,
+            {
+                $set: { coverImage: coverImage.url }
+            },
+            { new: true }).select("-password")
 
         return res
-        .status(new Apiresponse(200,"coverImage updated succesfully",user))
+            .status(200)
+            .json(new Apiresponse(200, "coverImage updated succesfully", user))
+    } catch (error) {
+        throw new ApiError(error.message || "Error while updating coverImage", 500)
+    }
 })
 
 // make a util for deleting coverImage
